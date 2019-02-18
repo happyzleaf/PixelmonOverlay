@@ -1,7 +1,7 @@
 [
 	{
-		"modid": "pixelmonoverlaybroadcaster",
-		"name": "PixelmonOverlayBroadcaster",
+		"modid": "pixeloverlaybroadcaster",
+		"name": "PixelOverlayBroadcaster",
 		"description": "Lets you broadcast a set of messages through the pixelmon's topbar overlay.",
 		"version": "${version}",
 		"mcversion": "${mcversion}",
