@@ -1,0 +1,12 @@
+# Gradle
+.gradle
+build/
+libs/
+
+# SpongeStart
+run/
+
+# Intellij
+out/
+.idea/
+*.iml
