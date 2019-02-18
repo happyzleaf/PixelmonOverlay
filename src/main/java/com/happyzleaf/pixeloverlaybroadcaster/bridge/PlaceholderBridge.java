@@ -1,6 +1,6 @@
-package com.happyzleaf.pixelmonoverlaybroadcaster.bridge;
+package com.happyzleaf.pixeloverlaybroadcaster.bridge;
 
-import com.happyzleaf.pixelmonoverlaybroadcaster.PixelmonOverlayBroadcaster;
+import com.happyzleaf.pixeloverlaybroadcaster.PixelOverlayBroadcaster;
 import org.spongepowered.api.Sponge;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class PlaceholderBridge {
 		if (Sponge.getPluginManager().isLoaded("placeholderapi")) {
 			papi = new PlaceholderAPI(plugin);
 		} else {
-			PixelmonOverlayBroadcaster.LOGGER.error("PlaceholderAPI was not found, the placeholders won't be parsed.");
+			PixelOverlayBroadcaster.LOGGER.error("PlaceholderAPI was not found, the placeholders won't be parsed.");
 		}
 	}
 	

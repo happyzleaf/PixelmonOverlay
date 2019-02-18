@@ -1,4 +1,4 @@
-package com.happyzleaf.pixelmonoverlaybroadcaster;
+package com.happyzleaf.pixeloverlaybroadcaster;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -10,7 +10,7 @@ import org.spongepowered.api.scheduler.Task;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.happyzleaf.pixelmonoverlaybroadcaster.Config.announcements;
+import static com.happyzleaf.pixeloverlaybroadcaster.Config.announcements;
 
 /**
  * @author happyzleaf

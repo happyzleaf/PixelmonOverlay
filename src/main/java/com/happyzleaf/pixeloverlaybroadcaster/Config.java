@@ -1,4 +1,4 @@
-package com.happyzleaf.pixelmonoverlaybroadcaster;
+package com.happyzleaf.pixeloverlaybroadcaster;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
@@ -57,7 +57,7 @@ public class Config {
 			
 			broadcastInterval = node.getNode("broadcastInterval").getLong();
 		} catch (ObjectMappingException e) {
-			PixelmonOverlayBroadcaster.LOGGER.error("There was a problem while loading the config.", e);
+			PixelOverlayBroadcaster.LOGGER.error("There was a problem while loading the config.", e);
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class Config {
 			
 			node.getNode("broadcastInterval").setComment("The interval after which the message broadcasted will change.").setValue(broadcastInterval);
 		} catch (ObjectMappingException e) {
-			PixelmonOverlayBroadcaster.LOGGER.error("There was a problem while saving the config.", e);
+			PixelOverlayBroadcaster.LOGGER.error("There was a problem while saving the config.", e);
 		}
 		
 		save();
