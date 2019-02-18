@@ -1,9 +1,9 @@
-package com.happyzleaf.pixeloverlaybroadcaster;
+package com.happyzleaf.pixelbroadcaster;
 
 import com.google.inject.Inject;
-import com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge;
-import com.happyzleaf.pixeloverlaybroadcaster.manager.OverlayManager;
-import com.happyzleaf.pixeloverlaybroadcaster.manager.PixelBroadcastCommand;
+import com.happyzleaf.pixelbroadcaster.bridge.PlaceholderBridge;
+import com.happyzleaf.pixelbroadcaster.manager.OverlayManager;
+import com.happyzleaf.pixelbroadcaster.manager.PixelBroadcastCommand;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -19,13 +19,13 @@ import org.spongepowered.api.plugin.Plugin;
 
 import java.io.File;
 
-@Plugin(id = PixelOverlayBroadcaster.PLUGIN_ID, name = PixelOverlayBroadcaster.PLUGIN_NAME, version = PixelOverlayBroadcaster.VERSION,
+@Plugin(id = PixelBroadcaster.PLUGIN_ID, name = PixelBroadcaster.PLUGIN_NAME, version = PixelBroadcaster.VERSION,
 		description = "Lets you broadcast a set of messages through the pixelmon's topbar overlay.",
 		url = "https://happyzleaf.com/", authors = {"happyzleaf"},
 		dependencies = {@Dependency(id = "pixelmon")})
-public class PixelOverlayBroadcaster {
-	public static final String PLUGIN_ID = "pixeloverlaybroadcaster";
-	public static final String PLUGIN_NAME = "PixelOverlayBroadcaster";
+public class PixelBroadcaster {
+	public static final String PLUGIN_ID = "pixelbroadcaster";
+	public static final String PLUGIN_NAME = "PixelBroadcaster";
 	public static final String VERSION = "1.0.1";
 	
 	public static final Logger LOGGER = LoggerFactory.getLogger(PLUGIN_NAME);

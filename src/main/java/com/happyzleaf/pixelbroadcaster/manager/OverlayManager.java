@@ -1,6 +1,6 @@
-package com.happyzleaf.pixeloverlaybroadcaster.manager;
+package com.happyzleaf.pixelbroadcaster.manager;
 
-import com.happyzleaf.pixeloverlaybroadcaster.Announcement;
+import com.happyzleaf.pixelbroadcaster.Announcement;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import org.spongepowered.api.Sponge;
@@ -13,7 +13,7 @@ import org.spongepowered.api.scheduler.Task;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.happyzleaf.pixeloverlaybroadcaster.Config.*;
+import static com.happyzleaf.pixelbroadcaster.Config.*;
 
 /**
  * @author happyzleaf
