@@ -2,6 +2,8 @@ package com.happyzleaf.pixeloverlaybroadcaster;
 
 import com.google.inject.Inject;
 import com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge;
+import com.happyzleaf.pixeloverlaybroadcaster.manager.OverlayManager;
+import com.happyzleaf.pixeloverlaybroadcaster.manager.PixelBroadcastCommand;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ import java.io.File;
 public class PixelOverlayBroadcaster {
 	public static final String PLUGIN_ID = "pixeloverlaybroadcaster";
 	public static final String PLUGIN_NAME = "PixelOverlayBroadcaster";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.0.1";
 	
 	public static final Logger LOGGER = LoggerFactory.getLogger(PLUGIN_NAME);
 	
@@ -47,8 +49,10 @@ public class PixelOverlayBroadcaster {
 	public void onServerStarted(GameStartedServerEvent event) {
 		PlaceholderBridge.setup(this);
 		
-		Sponge.getEventManager().registerListeners(this, new EventListener());
+		Sponge.getEventManager().registerListeners(this, new OverlayManager());
 		load();
+		
+		PixelBroadcastCommand.register(this);
 	}
 	
 	@Listener
@@ -64,7 +68,7 @@ public class PixelOverlayBroadcaster {
 			LOGGER.warn("The plugin will be disabled until you provide at least one announcement.");
 			return false;
 		} else {
-			EventListener.init(this);
+			OverlayManager.init(this);
 			return true;
 		}
 	}
