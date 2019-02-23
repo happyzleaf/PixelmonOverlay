@@ -22,11 +22,11 @@ import java.io.File;
 @Plugin(id = PixelOverlayBroadcaster.PLUGIN_ID, name = PixelOverlayBroadcaster.PLUGIN_NAME, version = PixelOverlayBroadcaster.VERSION,
 		description = "Lets you broadcast a set of messages through the pixelmon's topbar overlay.",
 		url = "https://happyzleaf.com/", authors = {"happyzleaf"},
-		dependencies = {@Dependency(id = "pixelmon")})
+		dependencies = {@Dependency(id = "pixelmon", version = "7.0.3")})
 public class PixelOverlayBroadcaster {
 	public static final String PLUGIN_ID = "pixeloverlaybroadcaster";
 	public static final String PLUGIN_NAME = "PixelOverlayBroadcaster";
-	public static final String VERSION = "1.0.1";
+	public static final String VERSION = "1.1.0";
 	
 	public static final Logger LOGGER = LoggerFactory.getLogger(PLUGIN_NAME);
 	

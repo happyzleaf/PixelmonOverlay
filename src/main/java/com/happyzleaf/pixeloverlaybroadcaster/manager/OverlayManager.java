@@ -56,11 +56,7 @@ public class OverlayManager {
 	private static void silence() {
 		announcement = null;
 		
-		// TODO 7.0.2 => Pixelmon.network.sendToAll(new CustomNoticePacket().setEnabled(false))
-		CustomNoticePacket packet = new CustomNoticePacket();
-		packet.setEnabled(false);
-		Pixelmon.network.sendToAll(packet);
-		//
+		Pixelmon.network.sendToAll(new CustomNoticePacket().setEnabled(false));
 		
 		start();
 	}

@@ -60,43 +60,42 @@ public class PixelBroadcastCommand implements CommandExecutor {
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		Long duration = args.<Long>getOne("duration").orElse(null);
-		
-		if (args.hasAny("id")) {
-			int id = args.<Integer>getOne("id").get() - 1;
-			if (id < 0 || id >= Config.announcements.size()) {
-				throw new CommandException(Text.of(TextColors.RED, String.format("[PixelBroadcaster] The id must be within 1 and %d.", Config.announcements.size())));
-			}
-			announcement = Config.announcements.get(id);
-		} else {
-			EnumOverlayLayout layout = args.<EnumOverlayLayout>getOne("layout").get();
-			List<String> lines = new ArrayList<>(Arrays.asList(args.<String>getOne("lines").get().split("\n")));
-			
-			EnumSpecies species = args.<EnumSpecies>getOne("species").orElse(null);
-			Float scale = (float) ((double) args.<Double>getOne("scale").orElse(-1d));
-			if (scale < 0) scale = null;
-			Item item = null;
-			String itemName = args.<String>getOne("item").orElse(null);
-			if (itemName != null) {
-				item = Item.REGISTRY.getObject(new ResourceLocation(itemName));
-				if (item == null) {
-					throw new CommandException(Text.of(TextColors.RED, String.format("[PixelBroadcaster] The item '%s' was not found.", itemName)));
-				}
-				if (!item.getRegistryName().getNamespace().equals("minecraft")) { // TODO 7.0.2 => remove
-					throw new CommandException(Text.of(TextColors.RED, String.format("[PixelBroadcaster] The item '%s' is forbidden! Only vanilla items are enabled.", itemName)));
-				}
-			}
-			
-			OverlayGraphicType type = species == null ? OverlayGraphicType.ItemSprite : scale == null ? OverlayGraphicType.PokemonSprite : OverlayGraphicType.Pokemon3D; // TODO currently this doesn't let you create Item3D announcements, but is it worth it? In 7.0.2 it's gonna be useless anyway.
-			
-			announcement = new Announcement(layout, type, lines, duration, species, scale, item);
-		}
-		
-		stop();
-		announcement.sendToAll();
-		if (!Config.announcements.isEmpty()) {
-			task = Task.builder().delay(duration == null ? announcement.getDuration() : duration, TimeUnit.SECONDS).execute(OverlayManager::forward).submit(plugin).getUniqueId();
-		}
-		return null;
+		src.sendMessage(Text.of(TextColors.RED, "Don't even try that."));
+		return CommandResult.empty();
+//		Long duration = args.<Long>getOne("duration").orElse(null);
+//
+//		if (args.hasAny("id")) {
+//			int id = args.<Integer>getOne("id").get() - 1;
+//			if (id < 0 || id >= Config.announcements.size()) {
+//				throw new CommandException(Text.of(TextColors.RED, String.format("[PixelBroadcaster] The id must be within 1 and %d.", Config.announcements.size())));
+//			}
+//			announcement = Config.announcements.get(id);
+//		} else {
+//			EnumOverlayLayout layout = args.<EnumOverlayLayout>getOne("layout").get();
+//			List<String> lines = new ArrayList<>(Arrays.asList(args.<String>getOne("lines").get().split("\n")));
+//
+//			EnumSpecies species = args.<EnumSpecies>getOne("species").orElse(null);
+//			Float scale = (float) ((double) args.<Double>getOne("scale").orElse(-1d));
+//			if (scale < 0) scale = null;
+//			Item item = null;
+//			String itemName = args.<String>getOne("item").orElse(null);
+//			if (itemName != null) {
+//				item = Item.REGISTRY.getObject(new ResourceLocation(itemName));
+//				if (item == null) {
+//					throw new CommandException(Text.of(TextColors.RED, String.format("[PixelBroadcaster] The item '%s' was not found.", itemName)));
+//				}
+//			}
+//
+//			OverlayGraphicType type = species == null ? OverlayGraphicType.ItemStack : scale == null ? OverlayGraphicType.PokemonSprite : OverlayGraphicType.Pokemon3D; // TODO currently this doesn't let you create Item3D announcements, but is it worth it? In 7.0.2 it's gonna be useless anyway.
+//
+//			announcement = new Announcement(layout, type, lines, duration, species, scale, item);
+//		}
+//
+//		stop();
+//		announcement.sendToAll();
+//		if (!Config.announcements.isEmpty()) {
+//			task = Task.builder().delay(duration == null ? announcement.getDuration() : duration, TimeUnit.SECONDS).execute(OverlayManager::forward).submit(plugin).getUniqueId();
+//		}
+//		return null;
 	}
 }

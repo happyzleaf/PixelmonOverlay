@@ -9,6 +9,10 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +31,10 @@ public class Config {
 	
 	/** This has to be an arraylist so the positions are preserved. */
 	public static ArrayList<Announcement> announcements = new ArrayList<>(Arrays.asList(
-			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.PokemonSprite, new ArrayList<>(Arrays.asList("Hi %player%", "Currently there are %server_online% players connected", "X: %player_x% Y: %player_y% Z: %player_z%")), null, EnumSpecies.Pikachu, null, null),
-			new Announcement(EnumOverlayLayout.LEFT, OverlayGraphicType.Pokemon3D, new ArrayList<>(Arrays.asList("Player: %player_displayname%", "Health: %player_health%/%player_max_health%", "Ping: %player_ping%")), null, EnumSpecies.Solgaleo, 5f, null),
-			new Announcement(EnumOverlayLayout.RIGHT, OverlayGraphicType.ItemSprite, new ArrayList<>(Arrays.asList("Joined in: %player_first_join%", "Played for: %player_time_played%")), 10L, null, null, Items.APPLE),
-			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.Item3D, new ArrayList<>(Arrays.asList("Server: %server_online%/%server_max_players%", "%server_motd%", "TPS: %server_tps%")), 25L, null, null, Items.APPLE)
+			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.PokemonSprite, new ArrayList<>(Arrays.asList("Hi %player%", "Currently there are %server_online% players connected", "X: %player_x% Y: %player_y% Z: %player_z%")), null, "pikachu s", null),
+			new Announcement(EnumOverlayLayout.LEFT, OverlayGraphicType.Pokemon3D, new ArrayList<>(Arrays.asList("Player: %player_displayname%", "Health: %player_health%/%player_max_health%", "Ping: %player_ping%")), null, "solgaleo gr:giant", null),
+			new Announcement(EnumOverlayLayout.RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Joined in: %player_first_join%", "Played for: %player_time_played%")), 10L, null, ItemStack.of(ItemTypes.APPLE, 1)),
+			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Server: %server_online%/%server_max_players%", "%server_motd%", "TPS: %server_tps%")), 25L, null, ItemStack.of(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").get(), 1))
 	));
 	
 	public static long broadcastInterval = 300; // in seconds

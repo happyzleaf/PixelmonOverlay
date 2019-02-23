@@ -1,13 +1,13 @@
 package com.happyzleaf.pixeloverlaybroadcaster;
 
 import com.google.common.reflect.TypeToken;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.OverlayGraphicType;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.Types;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.List;
 
@@ -34,62 +35,54 @@ public class Announcement {
 	private Long duration;
 	
 	private OverlayGraphicType type;
-	private EnumSpecies species;
-	private Float scale;
-	private Item item;
 	
-	private NoticeOverlay.Builder builder;
+	private String spec;
 	
-	public Announcement(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable EnumSpecies species, @Nullable Float scale, @Nullable Item item) throws IllegalArgumentException {
+	private ItemStack itemStack;
+	
+	private CustomNoticePacket packet;
+	
+	public Announcement(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack) throws IllegalArgumentException {
 		this.layout = checkNotNull(layout, "layout");
 		this.type = checkNotNull(type, "type");
 		this.lines = checkNotNull(lines, "lines");
 		this.duration = duration;
 		
-		builder = NoticeOverlay.builder(layout, "");
+		NoticeOverlay.Builder builder = NoticeOverlay.builder();
 		
 		switch (type) {
 			case PokemonSprite:
-				if (species != null) {
-					builder.setIconToPokemonSprite(this.species = species);
+				if (spec != null) {
+					builder.setPokemonSprite(new PokemonSpec(this.spec = spec));
 				} else {
 					throw new IllegalArgumentException("You didn't specified the species.");
 				}
 				break;
 			case Pokemon3D:
-				if (species != null && scale != null) {
-					builder.setIconToPokemonModel(this.species = species, this.scale = scale);
+				if (spec != null) {
+					builder.setPokemon3D(new PokemonSpec(this.spec = spec));
 				} else {
-					throw new IllegalArgumentException("You didn't specified the species or the scale.");
+					throw new IllegalArgumentException("You didn't specified the species.");
 				}
 				break;
-			case ItemSprite:
-				if (item != null) {
-					builder.setIconToItemSprite(this.item = item);
-				} else {
-					throw new IllegalArgumentException("You didn't specified the item.");
-				}
-				break;
-			case Item3D:
-				if (item != null) {
-					if (!item.getRegistryName().getNamespace().equals("minecraft")) { // TODO 7.0.2 => remove
-						throw new IllegalArgumentException(String.format("Due to limitations in pixelmon 7.0.1, you can only use minecraft items. '%s' is forbidden.", item.getRegistryName().toString()));
-					}
-					builder.setIconToItemModel(this.item = item);
+			case ItemStack:
+				if (itemStack != null) {
+					builder.setItemStack(net.minecraft.item.ItemStack.class.cast(this.itemStack = itemStack));
 				} else {
 					throw new IllegalArgumentException("You didn't specified the item.");
 				}
 				break;
 		}
+		
+		packet = builder.build();
 	}
 	
 	public long getDuration() {
 		return duration == null ? Config.broadcastInterval : duration;
 	}
 	
-	// TODO 7.0.2 => build() it before, then use packet.setLines(parse(lines, player)).sendTo((EntityPlayerMP) player)
 	public void sendTo(Player player) {
-		builder.setLines(parse(lines, player)).sendTo((EntityPlayerMP) player);
+		Pixelmon.network.sendTo(packet.setLines(parse(lines, player).toArray(new String[0])), (EntityPlayerMP) player);
 	}
 	
 	public void sendToAll() {
@@ -115,13 +108,11 @@ public class Announcement {
 			
 			switch (obj.type) {
 				case Pokemon3D:
-					value.getNode("scale").setValue(obj.scale);
 				case PokemonSprite:
-					value.getNode("species").setValue(TypeToken.of(EnumSpecies.class), obj.species);
+					value.getNode("spec").setValue(obj.spec);
 					break;
-				case ItemSprite:
-				case Item3D:
-					value.getNode("item").setValue(obj.item.getRegistryName().toString());
+				case ItemStack:
+					value.getNode("itemStack").setValue(TypeToken.of(ItemStack.class), obj.itemStack);
 					break;
 			}
 		}
@@ -141,25 +132,13 @@ public class Announcement {
 			}
 			Long duration = value.getNode("duration").getValue(Types::asLong);
 			
-			EnumSpecies species = null;
-			ConfigurationNode speciesNode = value.getNode("species");
-			if (!speciesNode.isVirtual()) {
-				species = speciesNode.getValue(TypeToken.of(EnumSpecies.class));
-			}
+			String specString = value.getNode("species").getString();
 			
-			Float scale = value.getNode("scale").getValue(Types::asFloat);
-			
-			Item item = null;
-			String itemName = value.getNode("item").getString();
-			if (itemName != null) {
-				item = Item.REGISTRY.getObject(new ResourceLocation(itemName));
-				if (item == null) {
-					throw new ObjectMappingException(String.format("Cannot find any item with the id '%s'.", itemName));
-				}
-			}
+			ConfigurationNode itemStackNode = value.getNode("item");
+			ItemStack itemStack = itemStackNode.isVirtual() ? null : itemStackNode.getValue(TypeToken.of(ItemStack.class));
 			
 			try {
-				return new Announcement(layout, type, lines, duration, species, scale, item);
+				return new Announcement(layout, type, lines, duration, specString, itemStack);
 			} catch (IllegalArgumentException e) {
 				throw new ObjectMappingException(e);
 			}
