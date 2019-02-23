@@ -1,4 +1,4 @@
-package com.happyzleaf.pixelbroadcaster;
+package com.happyzleaf.pixeloverlaybroadcaster;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
@@ -20,7 +20,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.happyzleaf.pixelbroadcaster.bridge.PlaceholderBridge.parse;
+import static com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge.parse;
 
 /**
  * @author happyzleaf

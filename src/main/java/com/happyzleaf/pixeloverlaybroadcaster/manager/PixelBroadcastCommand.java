@@ -1,7 +1,7 @@
-package com.happyzleaf.pixelbroadcaster.manager;
+package com.happyzleaf.pixeloverlaybroadcaster.manager;
 
-import com.happyzleaf.pixelbroadcaster.Announcement;
-import com.happyzleaf.pixelbroadcaster.Config;
+import com.happyzleaf.pixeloverlaybroadcaster.Announcement;
+import com.happyzleaf.pixeloverlaybroadcaster.Config;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.OverlayGraphicType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.happyzleaf.pixelbroadcaster.manager.OverlayManager.*;
+import static com.happyzleaf.pixeloverlaybroadcaster.manager.OverlayManager.*;
 
 /**
  * @author happyzleaf
@@ -36,7 +36,7 @@ public class PixelBroadcastCommand implements CommandExecutor {
 	public static void register(Object plugin) {
 		PixelBroadcastCommand.plugin = plugin;
 		Sponge.getCommandManager().register(plugin, CommandSpec.builder()
-				.permission("pixelbroadcaster.command.pixelbroadcast")
+				.permission("pixeloverlaybroadcaster.command.pixelbroadcast")
 				.arguments(
 						GenericArguments.firstParsing(
 								GenericArguments.integer(Text.of("id")),

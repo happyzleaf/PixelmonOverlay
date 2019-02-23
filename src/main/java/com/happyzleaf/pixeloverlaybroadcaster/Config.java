@@ -1,4 +1,4 @@
-package com.happyzleaf.pixelbroadcaster;
+package com.happyzleaf.pixeloverlaybroadcaster;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
@@ -65,7 +65,7 @@ public class Config {
 				throw new ObjectMappingException(String.format("silenceInterval must be 0 or higher, right now it's %d.", silenceInterval));
 			}
 		} catch (ObjectMappingException e) {
-			PixelBroadcaster.LOGGER.error("There was a problem while loading the config.", e);
+			PixelOverlayBroadcaster.LOGGER.error("There was a problem while loading the config.", e);
 		}
 		
 		saveConfig();
@@ -80,7 +80,7 @@ public class Config {
 			node.getNode("broadcastInterval").setComment("The interval (in seconds) after which the broadcast will change.").setValue(broadcastInterval);
 			node.getNode("silenceInterval").setComment("The seconds of silence between two broadcasts. Set to 0 to disable.").setValue(silenceInterval);
 		} catch (ObjectMappingException e) {
-			PixelBroadcaster.LOGGER.error("There was a problem while saving the config.", e);
+			PixelOverlayBroadcaster.LOGGER.error("There was a problem while saving the config.", e);
 		}
 		
 		save();

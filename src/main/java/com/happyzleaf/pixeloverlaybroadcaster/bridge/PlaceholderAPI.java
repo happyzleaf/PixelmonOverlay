@@ -1,4 +1,4 @@
-package com.happyzleaf.pixelbroadcaster.bridge;
+package com.happyzleaf.pixeloverlaybroadcaster.bridge;
 
 import me.rojo8399.placeholderapi.PlaceholderService;
 import org.spongepowered.api.Sponge;
