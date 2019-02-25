@@ -18,7 +18,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,7 +30,6 @@ import static com.happyzleaf.pixelmonoverlay.impl.bridge.PlaceholderBridge.parse
 public class OverlayImpl implements Overlay {
 	private EnumOverlayLayout layout;
 	
-	private List<String> originalLines; // I was wasting too much time on this, I'll just fix it quickly, maybe I'll come back later.
 	private List<String> lines;
 	
 	private Long duration;
@@ -48,8 +46,7 @@ public class OverlayImpl implements Overlay {
 		this.layout = checkNotNull(layout, "layout");
 		this.type = checkNotNull(type, "type");
 		
-		this.originalLines = checkNotNull(lines, "lines");
-		this.lines = this.originalLines.stream().map(s -> s.replaceAll("(?<!\\\\)&", "\u00A7")).collect(Collectors.toList());
+		this.lines = checkNotNull(lines, "lines");
 		checkArgument(duration == null || duration >= 0, "The duration must be null, 0 or positive.");
 		
 		this.duration = duration;
@@ -92,7 +89,7 @@ public class OverlayImpl implements Overlay {
 	
 	@Override
 	public CustomNoticePacket build(Player player) {
-		return packet.setLines(parse(lines, player).toArray(new String[0]));
+		return packet.setLines(parse(lines, player).stream().map(s -> s.replaceAll("(?<!\\\\)&", "\u00A7")).toArray(String[]::new));
 	}
 	
 	public static class Serializer implements TypeSerializer<OverlayImpl> {
@@ -106,8 +103,8 @@ public class OverlayImpl implements Overlay {
 			value.getNode("layout").setValue(TypeToken.of(EnumOverlayLayout.class), obj.layout);
 			value.getNode("type").setValue(TypeToken.of(OverlayGraphicType.class), obj.type);
 			
-			if (!obj.originalLines.isEmpty()) {
-				value.getNode("lines").setValue(obj.originalLines);
+			if (!obj.lines.isEmpty()) {
+				value.getNode("lines").setValue(obj.lines);
 			}
 			
 			if (obj.duration != null) {
