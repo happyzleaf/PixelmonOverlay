@@ -18,8 +18,11 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge.parse;
 
@@ -30,6 +33,7 @@ import static com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge.pa
 public class Announcement {
 	private EnumOverlayLayout layout;
 	
+	private List<String> originalLines; // I was wasting too much time on this, I'll just fix it quickly, maybe I'll come back later.
 	private List<String> lines;
 	
 	private Long duration;
@@ -45,10 +49,16 @@ public class Announcement {
 	public Announcement(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack) throws IllegalArgumentException {
 		this.layout = checkNotNull(layout, "layout");
 		this.type = checkNotNull(type, "type");
-		this.lines = checkNotNull(lines, "lines");
+		
+		this.originalLines = checkNotNull(lines, "lines");
+		this.lines = this.originalLines.stream().map(s -> s.replaceAll("(?<!\\\\)&", "\u00A7")).collect(Collectors.toList());
+		checkArgument(duration == null || duration >= 0, "The duration must be null, 0 or positive.");
+		
 		this.duration = duration;
 		
-		NoticeOverlay.Builder builder = NoticeOverlay.builder();
+		NoticeOverlay.Builder builder = NoticeOverlay.builder()
+				.setLayout(layout)
+				.setLines(); // TODO 7.0.4 => remove
 		
 		switch (type) {
 			case PokemonSprite:
@@ -101,7 +111,11 @@ public class Announcement {
 			
 			value.getNode("layout").setValue(TypeToken.of(EnumOverlayLayout.class), obj.layout);
 			value.getNode("type").setValue(TypeToken.of(OverlayGraphicType.class), obj.type);
-			value.getNode("lines").setValue(new TypeToken<List<String>>() {}, obj.lines);
+			
+			if (!obj.originalLines.isEmpty()) {
+				value.getNode("lines").setValue(obj.originalLines);
+			}
+			
 			if (obj.duration != null) {
 				value.getNode("duration").setValue(obj.duration);
 			}
@@ -126,19 +140,22 @@ public class Announcement {
 			
 			EnumOverlayLayout layout = value.getNode("layout").getValue(TypeToken.of(EnumOverlayLayout.class));
 			OverlayGraphicType type = value.getNode("type").getValue(TypeToken.of(OverlayGraphicType.class));
-			List<String> lines = value.getNode("lines").getList(TypeToken.of(String.class));
-			for (int i = 0; i < lines.size(); i++) {
-				lines.set(i, lines.get(i).replace('&', '\u00A7')); //if you're reading this: dratini sucks
+			
+			List<String> lines = new ArrayList<>();
+			ConfigurationNode linesNode = value.getNode("lines");
+			if (!linesNode.isVirtual()) {
+				lines.addAll(linesNode.getList(TypeToken.of(String.class)));
 			}
+			
 			Long duration = value.getNode("duration").getValue(Types::asLong);
 			
-			String specString = value.getNode("species").getString();
+			String spec = value.getNode("spec").getString();
 			
-			ConfigurationNode itemStackNode = value.getNode("item");
+			ConfigurationNode itemStackNode = value.getNode("itemStack");
 			ItemStack itemStack = itemStackNode.isVirtual() ? null : itemStackNode.getValue(TypeToken.of(ItemStack.class));
 			
 			try {
-				return new Announcement(layout, type, lines, duration, specString, itemStack);
+				return new Announcement(layout, type, lines, duration, spec, itemStack);
 			} catch (IllegalArgumentException e) {
 				throw new ObjectMappingException(e);
 			}

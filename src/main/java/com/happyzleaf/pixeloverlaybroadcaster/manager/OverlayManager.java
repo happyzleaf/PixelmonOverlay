@@ -22,29 +22,25 @@ import static com.happyzleaf.pixeloverlaybroadcaster.Config.*;
 public class OverlayManager {
 	private static Object plugin;
 	
-	static UUID task = null;
+	private static UUID task = null;
 	
 	private static int index;
-	static Announcement announcement = null;
+	private static Announcement announcement = null;
 	
 	public static void init(Object plugin) {
 		OverlayManager.plugin = plugin;
 		stop();
-		load(0);
-		start();
+		index = -1;
+		forward();
 	}
 	
-	private static void start() {
-		task = Task.builder().delay(silenceInterval, TimeUnit.SECONDS).execute(OverlayManager::forward).submit(plugin).getUniqueId();
-	}
-	
-	static void stop() {
+	private static void stop() {
 		if (task != null) {
 			Sponge.getScheduler().getTaskById(task).ifPresent(Task::cancel);
 		}
 	}
 	
-	static void forward() {
+	private static void forward() {
 		if (index == announcements.size() - 1) {
 			load(0);
 		} else {
@@ -58,7 +54,7 @@ public class OverlayManager {
 		
 		Pixelmon.network.sendToAll(new CustomNoticePacket().setEnabled(false));
 		
-		start();
+		task = Task.builder().delay(silenceInterval, TimeUnit.SECONDS).execute(OverlayManager::forward).submit(plugin).getUniqueId();
 	}
 	
 	private static void load(int i) {
