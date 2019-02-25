@@ -1,20 +1,18 @@
-package com.happyzleaf.pixeloverlaybroadcaster;
+package com.happyzleaf.pixelmonoverlay.impl;
 
 import com.google.common.reflect.TypeToken;
-import com.pixelmonmod.pixelmon.Pixelmon;
+import com.happyzleaf.pixelmonoverlay.api.Overlay;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.OverlayGraphicType;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
-import net.minecraft.entity.player.EntityPlayerMP;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.Types;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -24,13 +22,13 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.happyzleaf.pixeloverlaybroadcaster.bridge.PlaceholderBridge.parse;
+import static com.happyzleaf.pixelmonoverlay.impl.bridge.PlaceholderBridge.parse;
 
 /**
  * @author happyzleaf
  * @since 17/02/2019
  */
-public class Announcement {
+public class OverlayImpl implements Overlay {
 	private EnumOverlayLayout layout;
 	
 	private List<String> originalLines; // I was wasting too much time on this, I'll just fix it quickly, maybe I'll come back later.
@@ -46,7 +44,7 @@ public class Announcement {
 	
 	private CustomNoticePacket packet;
 	
-	public Announcement(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack) throws IllegalArgumentException {
+	public OverlayImpl(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack) throws IllegalArgumentException {
 		this.layout = checkNotNull(layout, "layout");
 		this.type = checkNotNull(type, "type");
 		
@@ -87,23 +85,19 @@ public class Announcement {
 		packet = builder.build();
 	}
 	
+	@Override
 	public long getDuration() {
 		return duration == null ? Config.broadcastInterval : duration;
 	}
 	
-	public void sendTo(Player player) {
-		Pixelmon.network.sendTo(packet.setLines(parse(lines, player).toArray(new String[0])), (EntityPlayerMP) player);
+	@Override
+	public CustomNoticePacket build(Player player) {
+		return packet.setLines(parse(lines, player).toArray(new String[0]));
 	}
 	
-	public void sendToAll() {
-		for (Player player : Sponge.getServer().getOnlinePlayers()) {
-			sendTo(player);
-		}
-	}
-	
-	public static class Serializer implements TypeSerializer<Announcement> {
+	public static class Serializer implements TypeSerializer<OverlayImpl> {
 		@Override
-		public void serialize(@NonNull TypeToken<?> t, @Nullable Announcement obj, @NonNull ConfigurationNode value) throws ObjectMappingException {
+		public void serialize(@NonNull TypeToken<?> t, @Nullable OverlayImpl obj, @NonNull ConfigurationNode value) throws ObjectMappingException {
 			if (obj == null) {
 				value.setValue("null");
 				return;
@@ -133,7 +127,7 @@ public class Announcement {
 		
 		@Nullable
 		@Override
-		public Announcement deserialize(@NonNull TypeToken<?> t, @NonNull ConfigurationNode value) throws ObjectMappingException {
+		public OverlayImpl deserialize(@NonNull TypeToken<?> t, @NonNull ConfigurationNode value) throws ObjectMappingException {
 			if (value.getString("").equals("null")) {
 				return null;
 			}
@@ -155,7 +149,7 @@ public class Announcement {
 			ItemStack itemStack = itemStackNode.isVirtual() ? null : itemStackNode.getValue(TypeToken.of(ItemStack.class));
 			
 			try {
-				return new Announcement(layout, type, lines, duration, spec, itemStack);
+				return new OverlayImpl(layout, type, lines, duration, spec, itemStack);
 			} catch (IllegalArgumentException e) {
 				throw new ObjectMappingException(e);
 			}

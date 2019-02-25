@@ -1,8 +1,8 @@
 [
 	{
-		"modid": "pixeloverlaybroadcaster",
-		"name": "PixelOverlayBroadcaster",
-		"description": "Lets you broadcast a set of messages through the pixelmon's topbar overlay.",
+		"modid": "pixelmonoverlay",
+		"name": "PixelmonOverlay",
+		"description": "Gives plugin access to the pixelmon overlay, and provides some useful features like broadcasts and such.",
 		"version": "${version}",
 		"mcversion": "${mcversion}",
 		"url": "https://happyzleaf.com/",

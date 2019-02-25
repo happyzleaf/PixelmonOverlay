@@ -1,10 +1,8 @@
-package com.happyzleaf.pixeloverlaybroadcaster;
+package com.happyzleaf.pixelmonoverlay.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.OverlayGraphicType;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import net.minecraft.init.Items;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -30,12 +28,13 @@ public class Config {
 	private static File file;
 	
 	/** This has to be an arraylist so the positions are preserved. */
-	public static ArrayList<Announcement> announcements = new ArrayList<>(Arrays.asList(
-			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.PokemonSprite, new ArrayList<>(Arrays.asList("Hi %player%", "Currently there are %server_online% players connected", "X: %player_x% Y: %player_y% Z: %player_z%")), null, "pikachu s", null),
-			new Announcement(EnumOverlayLayout.LEFT, OverlayGraphicType.Pokemon3D, new ArrayList<>(Arrays.asList("Player: %player_displayname%", "Health: %player_health%/%player_max_health%", "Ping: %player_ping%")), null, "solgaleo gr:giant", null),
-			new Announcement(EnumOverlayLayout.RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Joined in: %player_first_join%", "Played for: %player_time_played%")), 10L, null, ItemStack.of(ItemTypes.APPLE, 1)),
-			new Announcement(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Server: %server_online%/%server_max_players%", "%server_motd%", "TPS: %server_tps%")), 25L, null, ItemStack.of(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").get(), 1))
-	));
+	public static ArrayList<OverlayImpl> overlays = new ArrayList<>(Arrays.asList(
+			new OverlayImpl(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.PokemonSprite, new ArrayList<>(Arrays.asList("Hi %player%", "Currently there are %server_online% players connected", "X: %player_x% Y: %player_y% Z: %player_z%")), null, "pikachu s", null),
+			new OverlayImpl(EnumOverlayLayout.LEFT, OverlayGraphicType.Pokemon3D, new ArrayList<>(Arrays.asList("Player: %player_displayname%", "Health: %player_health%/%player_max_health%", "Ping: %player_ping%")), null, "solgaleo gr:giant", null),
+			new OverlayImpl(EnumOverlayLayout.RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Joined in: %player_first_join%", "Played for: %player_time_played%")), 10L, null, ItemStack.of(ItemTypes.GRASS, 1)),
+			new OverlayImpl(EnumOverlayLayout.LEFT_AND_RIGHT, OverlayGraphicType.ItemStack, new ArrayList<>(Arrays.asList("Server: %server_online%/%server_max_players%", "%server_motd%", "TPS: %server_tps%")), 25L, null, ItemStack.of(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").get(), 1))	));
+	
+//	public static List<ConfigurationNode> builders = new ArrayList<>(); for the commands
 	
 	public static long broadcastInterval = 300; // in seconds
 	public static long silenceInterval = 300; // in seconds
@@ -44,7 +43,7 @@ public class Config {
 		Config.loader = loader;
 		Config.file = file;
 		
-		TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Announcement.class), new Announcement.Serializer());
+		TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(OverlayImpl.class), new OverlayImpl.Serializer());
 		
 		loadConfig();
 	}
@@ -57,8 +56,8 @@ public class Config {
 		load();
 		
 		try {
-			announcements.clear();
-			announcements.addAll(node.getNode("announcements").getList(TypeToken.of(Announcement.class)));
+			overlays.clear();
+			overlays.addAll(node.getNode("overlays").getList(TypeToken.of(OverlayImpl.class)));
 			
 			broadcastInterval = node.getNode("broadcastInterval").getLong(broadcastInterval);
 			if (broadcastInterval <= 0) {
@@ -69,7 +68,7 @@ public class Config {
 				throw new ObjectMappingException(String.format("silenceInterval must be 0 or higher, right now it's %d.", silenceInterval));
 			}
 		} catch (ObjectMappingException e) {
-			PixelOverlayBroadcaster.LOGGER.error("There was a problem while loading the config.", e);
+			PixelmonOverlayImpl.LOGGER.error("There was a problem while loading the config.", e);
 		}
 		
 		saveConfig();
@@ -79,12 +78,12 @@ public class Config {
 		load();
 		
 		try {
-			node.getNode("announcements").setValue(new TypeToken<List<Announcement>>() {}, announcements);
+			node.getNode("overlays").setValue(new TypeToken<List<OverlayImpl>>() {}, overlays);
 			
 			node.getNode("broadcastInterval").setComment("The interval (in seconds) after which the broadcast will change.").setValue(broadcastInterval);
 			node.getNode("silenceInterval").setComment("The seconds of silence between two broadcasts. Set to 0 to disable.").setValue(silenceInterval);
 		} catch (ObjectMappingException e) {
-			PixelOverlayBroadcaster.LOGGER.error("There was a problem while saving the config.", e);
+			PixelmonOverlayImpl.LOGGER.error("There was a problem while saving the config.", e);
 		}
 		
 		save();
