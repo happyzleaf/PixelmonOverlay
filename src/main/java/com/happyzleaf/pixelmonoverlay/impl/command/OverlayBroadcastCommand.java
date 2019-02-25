@@ -30,7 +30,7 @@ public class OverlayBroadcastCommand implements CommandExecutor {
 	public static void register(Object plugin) {
 		OverlayBroadcastCommand.plugin = plugin;
 		Sponge.getCommandManager().register(plugin, CommandSpec.builder()
-				.permission("pixeloverlaybroadcaster.command.pixelbroadcast")
+				.permission("pixelmonoverlay.command.pixelbroadcast")
 				.arguments(
 						GenericArguments.firstParsing(
 								GenericArguments.integer(Text.of("id")),
