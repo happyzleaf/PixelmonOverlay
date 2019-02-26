@@ -15,6 +15,7 @@ Usage
 Config
 -
 `broadcastInterval` (defaults to 300 seconds) sets the interval after which the announcement will change.
+
 `silenceInterval` (defaults to 300 seconds) sets the time to wait between two announcements. Set to 0 to disable.
 
 `announcements` contains the ordered list of all the (guess what?) announcements. They will be shown according to their position in the list.
