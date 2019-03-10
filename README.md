@@ -48,3 +48,7 @@ Overlay overlay = service.create([...]);
 service.show(overlay);
 ```
 This might seem confusing, I'll update the thread with the link to the docs as soon as I finish writing them.
+
+Releases
+-
+For the releases, head off to the [ore page](https://ore.spongepowered.org/happyzlife/PixelmonOverlay).
