@@ -15,23 +15,23 @@ import java.util.List;
  */
 public class PlaceholderAPI implements EventListener<ChangeServiceProviderEvent> {
 	private PlaceholderService service;
-	
+
 	PlaceholderAPI(Object plugin) {
 		service = Sponge.getServiceManager().provideUnchecked(PlaceholderService.class);
 		Sponge.getEventManager().registerListener(plugin, ChangeServiceProviderEvent.class, this);
 	}
-	
+
 	@Override
 	public void handle(ChangeServiceProviderEvent event) {
 		if (event.getService().equals(PlaceholderService.class)) {
 			service = (PlaceholderService) event.getNewProviderRegistration().getProvider();
 		}
 	}
-	
+
 	String parse(String text, Object source) {
 		return TextSerializers.FORMATTING_CODE.serialize(service.replacePlaceholders(text, source, null));
 	}
-	
+
 	// TODO a bit heavy? Maybe papi can parse multiple lines directly
 	List<String> parse(List<String> texts, Object source) {
 		List<String> replacements = new ArrayList<>(texts.size());

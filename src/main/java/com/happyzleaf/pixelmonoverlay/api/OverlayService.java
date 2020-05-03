@@ -13,12 +13,12 @@ import java.util.List;
  */
 public interface OverlayService {
 	Overlay create(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack);
-	
+
 	void show(Overlay overlay);
-	
+
 	void hide();
-	
+
 	boolean reload();
-	
+
 	Overlay getCurrent();
 }

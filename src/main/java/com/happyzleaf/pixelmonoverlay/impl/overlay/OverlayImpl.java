@@ -1,7 +1,8 @@
-package com.happyzleaf.pixelmonoverlay.impl;
+package com.happyzleaf.pixelmonoverlay.impl.overlay;
 
 import com.google.common.reflect.TypeToken;
 import com.happyzleaf.pixelmonoverlay.api.Overlay;
+import com.happyzleaf.pixelmonoverlay.impl.Config;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
@@ -29,69 +30,67 @@ import static com.happyzleaf.pixelmonoverlay.impl.bridge.PlaceholderBridge.parse
  */
 public class OverlayImpl implements Overlay {
 	private EnumOverlayLayout layout;
-	
+
 	private List<String> lines;
-	
+
 	private Long duration;
-	
+
 	private OverlayGraphicType type;
-	
+
 	private String spec;
-	
+
 	private ItemStack itemStack;
-	
+
 	private CustomNoticePacket packet;
-	
+
 	public OverlayImpl(EnumOverlayLayout layout, OverlayGraphicType type, List<String> lines, @Nullable Long duration, @Nullable String spec, @Nullable ItemStack itemStack) throws IllegalArgumentException {
 		this.layout = checkNotNull(layout, "layout");
 		this.type = checkNotNull(type, "type");
-		
+
 		this.lines = checkNotNull(lines, "lines");
 		checkArgument(duration == null || duration >= 0, "The duration must be null, 0 or positive.");
-		
+
 		this.duration = duration;
-		
-		NoticeOverlay.Builder builder = NoticeOverlay.builder()
-				.setLayout(layout)
-				.setLines(); // TODO 7.0.4 => remove
-		
+
+		NoticeOverlay.Builder builder = NoticeOverlay.builder().setLayout(layout);
+
 		switch (type) {
 			case PokemonSprite:
-				if (spec != null) {
-					builder.setPokemonSprite(new PokemonSpec(this.spec = spec));
-				} else {
+				if (spec == null) {
 					throw new IllegalArgumentException("You didn't specified the species.");
 				}
+
+				builder.setPokemonSprite(new PokemonSpec(this.spec = spec));
 				break;
 			case Pokemon3D:
-				if (spec != null) {
-					builder.setPokemon3D(new PokemonSpec(this.spec = spec));
-				} else {
+				if (spec == null) {
 					throw new IllegalArgumentException("You didn't specified the species.");
 				}
+
+				builder.setPokemon3D(new PokemonSpec(this.spec = spec));
 				break;
 			case ItemStack:
-				if (itemStack != null) {
-					builder.setItemStack(net.minecraft.item.ItemStack.class.cast(this.itemStack = itemStack));
-				} else {
+				if (itemStack == null) {
 					throw new IllegalArgumentException("You didn't specified the item.");
 				}
+
+				builder.setItemStack(net.minecraft.item.ItemStack.class.cast(this.itemStack = itemStack));
 				break;
 		}
-		
+
 		packet = builder.build();
 	}
-	
+
 	@Override
 	public long getDuration() {
 		return duration == null ? Config.broadcastInterval : duration;
 	}
-	
+
 	@Override
 	public CustomNoticePacket build(Player player) {
 		return packet.setLines(parse(lines, player).stream().map(s -> s.replaceAll("(?<!\\\\)&", "\u00A7")).toArray(String[]::new));
 	}
-	
+
 	public static class Serializer implements TypeSerializer<OverlayImpl> {
 		@Override
 		public void serialize(@NonNull TypeToken<?> t, @Nullable OverlayImpl obj, @NonNull ConfigurationNode value) throws ObjectMappingException {
@@ -99,18 +98,18 @@ public class OverlayImpl implements Overlay {
 				value.setValue("null");
 				return;
 			}
-			
+
 			value.getNode("layout").setValue(TypeToken.of(EnumOverlayLayout.class), obj.layout);
 			value.getNode("type").setValue(TypeToken.of(OverlayGraphicType.class), obj.type);
-			
+
 			if (!obj.lines.isEmpty()) {
 				value.getNode("lines").setValue(obj.lines);
 			}
-			
+
 			if (obj.duration != null) {
 				value.getNode("duration").setValue(obj.duration);
 			}
-			
+
 			switch (obj.type) {
 				case Pokemon3D:
 				case PokemonSprite:
@@ -121,33 +120,31 @@ public class OverlayImpl implements Overlay {
 					break;
 			}
 		}
-		
+
 		@Nullable
 		@Override
 		public OverlayImpl deserialize(@NonNull TypeToken<?> t, @NonNull ConfigurationNode value) throws ObjectMappingException {
 			if (value.getString("").equals("null")) {
 				return null;
 			}
-			
+
 			EnumOverlayLayout layout = value.getNode("layout").getValue(TypeToken.of(EnumOverlayLayout.class));
 			OverlayGraphicType type = value.getNode("type").getValue(TypeToken.of(OverlayGraphicType.class));
-			
+
 			List<String> lines = new ArrayList<>();
-			ConfigurationNode linesNode = value.getNode("lines");
-			if (!linesNode.isVirtual()) {
-				lines.addAll(linesNode.getList(TypeToken.of(String.class)));
+			if (!value.getNode("lines").isVirtual()) {
+				lines.addAll(value.getNode("lines").getList(TypeToken.of(String.class)));
 			}
-			
+
 			Long duration = value.getNode("duration").getValue(Types::asLong);
-			
+
 			String spec = value.getNode("spec").getString();
-			
-			ConfigurationNode itemStackNode = value.getNode("itemStack");
-			ItemStack itemStack = itemStackNode.isVirtual() ? null : itemStackNode.getValue(TypeToken.of(ItemStack.class));
-			
+
+			ItemStack itemStack = value.getNode("itemStack").getValue(TypeToken.of(ItemStack.class), (ItemStack) null);
+
 			try {
 				return new OverlayImpl(layout, type, lines, duration, spec, itemStack);
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
 				throw new ObjectMappingException(e);
 			}
 		}

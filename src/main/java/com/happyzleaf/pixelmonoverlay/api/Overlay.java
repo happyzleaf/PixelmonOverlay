@@ -9,6 +9,6 @@ import org.spongepowered.api.entity.living.player.Player;
  */
 public interface Overlay {
 	long getDuration();
-	
+
 	CustomNoticePacket build(Player player);
 }
