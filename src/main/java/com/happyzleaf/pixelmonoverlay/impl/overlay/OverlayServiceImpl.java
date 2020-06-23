@@ -5,7 +5,7 @@ import com.happyzleaf.pixelmonoverlay.api.OverlayService;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.client.gui.custom.overlays.OverlayGraphicType;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.custom.overlays.CustomNoticePacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;

@@ -19,11 +19,11 @@ import org.spongepowered.api.plugin.Plugin;
 @Plugin(id = PixelmonOverlayImpl.PLUGIN_ID, name = PixelmonOverlayImpl.PLUGIN_NAME, version = PixelmonOverlayImpl.VERSION,
 		description = "Gives plugins access to the pixelmon overlay, and provides some useful features like broadcasts and such.",
 		url = "https://happyzleaf.com/", authors = {"happyzleaf"},
-		dependencies = {@Dependency(id = "pixelmon", version = "7.2.2")})
+		dependencies = {@Dependency(id = "pixelmon", version = "8.0.2")})
 public class PixelmonOverlayImpl {
 	public static final String PLUGIN_ID = "pixelmonoverlay";
 	public static final String PLUGIN_NAME = "PixelmonOverlay";
-	public static final String VERSION = "1.1.0";
+	public static final String VERSION = "1.1.1";
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(PLUGIN_NAME);
 

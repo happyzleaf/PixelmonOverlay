@@ -1,6 +1,6 @@
 package com.happyzleaf.pixelmonoverlay.api;
 
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.custom.overlays.CustomNoticePacket;
 import org.spongepowered.api.entity.living.player.Player;
 
 /**

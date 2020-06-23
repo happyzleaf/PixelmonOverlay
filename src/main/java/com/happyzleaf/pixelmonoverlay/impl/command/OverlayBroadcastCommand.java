@@ -34,7 +34,8 @@ public class OverlayBroadcastCommand implements CommandExecutor {
 		Sponge.getCommandManager().register(plugin, CommandSpec.builder()
 				.permission("pixelmonoverlay.command.pixelbroadcast")
 				.arguments(
-						GenericArguments.firstParsing(
+						GenericArguments.integer(Text.of("id")) // TODO remove
+						/*GenericArguments.firstParsing(
 								GenericArguments.integer(Text.of("id")),
 								GenericArguments.seq(
 										GenericArguments.enumValue(Text.of("layout"), EnumOverlayLayout.class),
@@ -48,7 +49,7 @@ public class OverlayBroadcastCommand implements CommandExecutor {
 										),
 										GenericArguments.remainingJoinedStrings(Text.of("lines"))
 								)),
-						GenericArguments.optional(GenericArguments.longNum(Text.of("duration")))
+						GenericArguments.optional(GenericArguments.longNum(Text.of("duration")))*/
 				)
 				.executor(new OverlayBroadcastCommand())
 				.build(), "pixelbroadcast");
