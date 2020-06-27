@@ -25,7 +25,7 @@ Node|Values|Meaning
 `layout`|`LEFT_AND_RIGHT`, `LEFT` or `RIGHT`.|Specifies the position of the sprite.
 `lines`|List of strings. |Sets the lines to be shown to the player. [Formatting codes](https://minecraft.gamepedia.com/g00/Formatting_codes?i10c.encReferrer=aHR0cHM6Ly93d3cuZ29vZ2xlLml0Lw%3D%3D&i10c.ua=1&i10c.dv=14) and [placeholders](https://github.com/rojo8399/PlaceholderAPI/wiki/Placeholders) are supported.
 `duration`|Decimal number. Example `20`|How long this announcement will last for. If not present, `broadcastInterval` will be used instead.
-`type`|`PokemonSprite`, `Pokemon3D`, `ItemSprite`, `Item3D`|Specifies the type of the sprite, read below for more info.
+`type`|`PokemonSprite`, `Pokemon3D`, `ItemStack`|Specifies the type of the sprite, read below for more info.
 `spec`|[Pokémon's spec](https://pixelmonmod.com/wiki/index.php?title=Pokemon_spec). Example: `pikachu s`|Required by `PokemonSprite` and `Pokemon3D`, specifies the pokémon's info.
 `itemStack`|The ItemStack.|Required by `ItemStack`, specifies the itemstack.
 
